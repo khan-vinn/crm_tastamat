@@ -22,7 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "@sentry/node": "^5.29.2",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "bcrypt": "^5.0.0",
     "bullmq": "^1.73.0",
     "colors": "^1.4.0",
@@ -32,8 +32,9 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "knex": "^0.95.8",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "mysql": "^2.18.1",
+    "qs": "^6.10.3",
     "sosise-core": "^0.8.6",
     "uuid": "^8.3.2",
     "validatorjs": "^3.22.1"

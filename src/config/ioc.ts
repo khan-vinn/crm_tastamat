@@ -1,3 +1,10 @@
+import IOC from "sosise-core/build/ServiceProviders/IOC";
+import LoggerService from "sosise-core/build/Services/Logger/LoggerService";
+import LogRepository from "../app/Repositories/Log/LogRepository";
+import RetailerCRMRepository from "../app/Repositories/RetailerCRM/RetailerCRMRepository";
+import { TastamatAPIRepository } from "../app/Repositories/Tastamat/TastamatAPIRepository";
+import RetailerCRMService from "../app/Services/RetailerCRMService";
+import TastamatService from "../app/Services/TastamatService";
 /**
  * IOC Config, please register here your services
  */
@@ -24,6 +31,17 @@ const iocConfig = {
      * const logger = IOC.make(LoggerService) as LoggerService;
      */
     nonSingletons: {
+        TastamatService: () => new TastamatService(
+            new TastamatAPIRepository(),
+            IOC.make(LogRepository),
+        ),
+        RetailerCRMService: () => new RetailerCRMService(
+            new RetailerCRMRepository(),
+            IOC.make(LogRepository)
+        ),
+        LogRepository: () => new LogRepository(
+            IOC.make(LoggerService)
+        )
         /**
          * This service is included in the core out of the box
          * If you want to override LoggerService just uncomment this code and import all necessary modules
