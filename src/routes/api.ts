@@ -20,7 +20,7 @@ router.use('/docs', [
 ]);
 
 const retailCrm = new RetailCrmController();
-router.all('/api/v1/booking', (request: Request, response: Response, next: NextFunction) => {
+router.post('/api/v1/booking', (request: Request, response: Response, next: NextFunction) => {
     retailCrm.updateStatus(request, response, next);
 });
 router.get('/api/v1/check/:identifier', (request: Request, response: Response, next: NextFunction) => {

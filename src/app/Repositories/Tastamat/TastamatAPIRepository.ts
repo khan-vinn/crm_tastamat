@@ -4,13 +4,15 @@ import { TastamatAPiRepositoryInterface } from './TastamatAPIRepositoryInterface
 import Lodash from 'lodash';
 import Qs from 'qs';
 import Helper from 'sosise-core/build/Helper/Helper';
-import PostmanRequestExeption from '../../Exceptions/Postamat/PostamatRequestExeption';
+import TastamatRequestExeption from '../../Exceptions/Tastamat/TastamatRequestExeption';
 import { ITransferStatus } from '../../Types/IProduct';
 import { tastamatConfig } from '../../../config/APiConfig';
 
 export class TastamatAPIRepository implements TastamatAPiRepositoryInterface {
     static MAX_SEND_RETRIES = 3;
     static DELAY_BETWEEN_RETRIES_IN_MS = 5000;
+    static API_PREFIX = '/platform/v1/rest/i';
+
     httpClient: AxiosInstance;
 
     constructor() {
@@ -24,15 +26,14 @@ export class TastamatAPIRepository implements TastamatAPiRepositoryInterface {
         });
     }
 
-    public async statusTransfer(status: ITransferStatus): Promise<any> {
-        return await 0;
-    }
+    async bookCell(identifier, size): Promise<any> {
 
-    public async checkPkgById(id: string): Promise<any> {
-        return await 0;
-    }
+        const body = {
+            id: identifier,
+            size
+        };
 
-    async bookCell(): Promise<any> {
+        await this.makeRequest(TastamatAPIRepository.API_PREFIX + '/orders/book', "POST", null, body);
 
         return await 0;
 
@@ -69,7 +70,7 @@ export class TastamatAPIRepository implements TastamatAPiRepositoryInterface {
 
             try {
                 // Make request
-                // this.generateHeader(params)
+                this.generateHeader(params);
                 //
                 const response = await this.httpClient.request({
                     url,
@@ -88,7 +89,7 @@ export class TastamatAPIRepository implements TastamatAPiRepositoryInterface {
                 // Check for max tries
             } catch (error) {
                 if (tries === TastamatAPIRepository.MAX_SEND_RETRIES) {
-                    throw new PostmanRequestExeption(
+                    throw new TastamatRequestExeption(
                         `Maximum amount of ${TastamatAPIRepository.MAX_SEND_RETRIES} tries is reached while requesting CRM`,
                         url,
                         params,

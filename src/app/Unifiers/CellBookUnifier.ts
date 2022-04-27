@@ -3,6 +3,10 @@ import ValidationException from 'sosise-core/build/Exceptions/Validation/Validat
 import { IBookCellRequest } from '../Types/IProduct';
 import { CellType } from '../Enums/cellType';
 
+const cellChangeTypeArray: string[] = Object.values(CellType)
+    .filter((value) => typeof value === "string")
+    .map((value) => (value as string));
+
 /**
  * If you need more validation rules, see: https://github.com/mikeerickson/validatorjs
  */
@@ -33,7 +37,7 @@ export default class CellBookUnifier {
     private validate() {
         // Create validator
         const validator = new Validator(this.params, {
-            size: ['required', 'string', 'min:1',],
+            size: ['required', 'string', 'min:1', 'in:' + cellChangeTypeArray],
             identifier: ['required', 'string', 'min:1']
         });
 

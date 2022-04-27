@@ -1,7 +1,7 @@
 import Exception from "sosise-core/build/Artisan/Make/Exception";
 import ExceptionResponse from 'sosise-core/build/Types/ExceptionResponse';
 
-export default class PostmanRequestExeption extends Exception{
+export default class TastamatRequestExeption extends Exception{
 
     public url: string;
     public params: any;

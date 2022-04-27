@@ -1,6 +1,6 @@
 import RetailerCRMRepositoryInterface from './RetailerCRMRepositoryInterface';
 import axios, { AxiosInstance } from 'axios';
-import PostmanRequestExeption from '../../Exceptions/Postamat/PostamatRequestExeption';
+import PostmanRequestExeption from '../../Exceptions/Tastamat/TastamatRequestExeption';
 import Helper from 'sosise-core/build/Helper/Helper';
 import Lodash from 'lodash';
 import Qs from 'qs';
@@ -33,7 +33,7 @@ export default class CrmApiV5Repository implements RetailerCRMRepositoryInterfac
 
     public async getInfoById(id: number): Promise<any> {
 
-        const response = await this.fetchOrderIdInfo(id)
+        const response = await this.fetchOrderIdInfo(id);
 
         const result: IProduct = {
 
@@ -52,20 +52,19 @@ export default class CrmApiV5Repository implements RetailerCRMRepositoryInterfac
 
     public async updateStatus(params: any): Promise<any> {
 
-        const response = await this.fetchOrderIdInfo(params.identifier);
-
-        console.log(response);
+        const order = await this.fetchOrderIdInfo(params.identifier);
 
         const body = {
             apiKey: this.apiKey,
-            site: response.data.orders[0].site,
+            site: order.site,
             order: JSON.stringify({
-                tastamat_status: params.status,
+                customFields: {
+                    tastamat_status: params.status
+                }
             })
         };
-        console.log(body);
 
-        const result = await this.makeRequest(`${CrmApiV5Repository.API_PREFIX}/orders/${response.data.orders[0].externalId}/edit`, "POST", null, body);
+        const result = await this.makeRequest(`${CrmApiV5Repository.API_PREFIX}/orders/${order.externalId}/edit`, "POST", null, body);
 
         return result.data;
 

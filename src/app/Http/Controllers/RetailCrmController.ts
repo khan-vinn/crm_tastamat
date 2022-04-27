@@ -3,10 +3,11 @@ import OrderProductIdUnifier from '../../Unifiers/OrderProductIdUnifier';
 import IOC from 'sosise-core/build/ServiceProviders/IOC';
 import TastamatService from '../../Services/TastamatService';
 import { IBookCellRequest, IBookCellResponse, IProduct, ITransferStatus, ITransferStatusResponse, IUnbookCellResponse } from '../../Types/IProduct';
-import { ReserveStatus, ResultStatus, TypeOfChange } from '../../Enums/cellType';
+import { ReserveStatus, TypeOfCellChange } from '../../Enums/cellType';
 import StatusTransferUnifier from '../../Unifiers/StatusTransferUnifier';
 import CellBookUnifier from '../../Unifiers/CellBookUnifier';
 import RetailerCRMService from '../../Services/RetailerCRMService';
+import CellBookMethodUnifier from '../../Unifiers/CellBookMethodUnifier';
 
 export default class RetailCRMController {
 
@@ -14,13 +15,15 @@ export default class RetailCRMController {
 
         try {
 
-            if (request?.body?.method?.toString() === TypeOfChange.book) {
+            const method: CellBookMethodUnifier = new CellBookMethodUnifier(request.body);
+
+            if (request?.body?.method?.toString() === TypeOfCellChange.book) {
 
                 const { body }: { body: IBookCellRequest } = request;
                 console.log(body);
                 const cellBookUnifier: CellBookUnifier = new CellBookUnifier(body);
 
-                // const service = IOC.make(TastamatService) as TastamatService;
+                const service = IOC.make(TastamatService) as TastamatService;
 
                 const result: IBookCellResponse = {
                     active: false,
@@ -28,15 +31,17 @@ export default class RetailCRMController {
                     pickcode: "dcscsdcsd",
                     status: ReserveStatus.RESERVED
                 };
+
                 response.json(result);
 
-                return;
 
-            } else if (request?.body?.method?.toString() === TypeOfChange.unbook) {
+            } else if (request?.body?.method?.toString() === TypeOfCellChange.unbook) {
 
                 const identifier: string = request.body?.identifier;
                 const orderProductIdUnifier: OrderProductIdUnifier = new OrderProductIdUnifier({ identifier });
+
                 // const service = IOC.make(TastamatService) as TastamatService;
+
                 const result: IUnbookCellResponse = {
                     active: true,
                     status: ReserveStatus.UNRESERVED
@@ -44,12 +49,7 @@ export default class RetailCRMController {
 
                 response.json(result);
 
-                return;
-
             }
-
-            // const responseService = await service.checkStatus(orderProductIdUnifier.orderId);
-            // console.log(responseService);
 
         } catch (error) {
 
@@ -67,17 +67,6 @@ export default class RetailCRMController {
             const service: RetailerCRMService = IOC.make(RetailerCRMService);
 
             const result: IProduct | { message: string } = await service.getInform(orderProductIdUnifier.pkgIdentifier);
-
-            // const result: IProduct = {
-            //     address: "some",
-            //     fullName: "ANN",
-            //     lockIndex: "saasd4545879",
-            //     mobilePhone: "46465465",
-            //     parcerValue: 79879879798.6654,
-            //     trackNumber: identifier
-            // };
-
-            console.log(result);
 
             response.json({ message: result });
 
@@ -98,15 +87,8 @@ export default class RetailCRMController {
             const statusTranferUnifier: StatusTransferUnifier = new StatusTransferUnifier(body);
             const service: RetailerCRMService = IOC.make(RetailerCRMService);
 
-            const result: ITransferStatusResponse | null = await service.updateStatus(statusTranferUnifier);
+            const result: ITransferStatusResponse | never = await service.updateStatus(statusTranferUnifier);
 
-            // const result: ITransferStatusResponse = {
-            //     "result": (+new Date()).toString(),
-            //     "identifier": +statusTranferUnifier.identifier,
-            //     "status": ResultStatus.SUCCESS
-            // };
-
-            console.log(result);
             response.json(result);
 
         } catch (error) {

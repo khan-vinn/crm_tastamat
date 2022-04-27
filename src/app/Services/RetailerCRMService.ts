@@ -6,7 +6,10 @@ export default class RetailerCRMService {
     /**
      * Constructor
      */
-    constructor(private retailerRepository: RetailerCRMRepositoryInterface, private logger: LogRepositoryInterface) { }
+    constructor(
+        private retailerRepository: RetailerCRMRepositoryInterface,
+        private logger: LogRepositoryInterface
+    ) { }
 
     public async getInform(id: number) {
         return this.retailerRepository.getInfoById(id);

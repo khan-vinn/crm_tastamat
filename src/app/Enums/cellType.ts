@@ -1,17 +1,17 @@
 export enum CellType {
-    "S" = "S",
-    "M" = "M",
-    "L" = "L"
+    "S", "M", "L"
 }
 export enum ResultStatus {
-    "SUCCESS" = "SUCCESS",
-    "ERROR" = "ERROR"
+    "SUCCESS", "ERROR"
 }
-export enum TypeOfChange {
+export enum TypeOfCellChange {
     "book" = "book",
     "unbook" = "unbook"
 }
 export enum ReserveStatus {
-    "RESERVED" = "RESERVED",
-    "UNRESERVED" = "UNRESERVED"
+    "RESERVED", "UNRESERVED"
+}
+
+export enum OrderStatus {
+    'request_reserving', 'reserved', 'request_unreserving', 'unreserved', 'unbooked', 'withdrawn', 'sent', 'dropped'
 }

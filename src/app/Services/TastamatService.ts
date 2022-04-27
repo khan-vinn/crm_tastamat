@@ -1,16 +1,12 @@
 import LogRepositoryInterface from "../Repositories/Log/LogRepositoryInterface";
 import { TastamatAPiRepositoryInterface } from "../Repositories/Tastamat/TastamatAPIRepositoryInterface";
-import { ITransferStatus } from "../Types/IProduct";
 
 export default class TastamatService {
-    private tastamatAPiRepository: TastamatAPiRepositoryInterface;
-    private loggerService: LogRepositoryInterface;
 
-    constructor(tastamatAPiRepository: TastamatAPiRepositoryInterface, loggerSerice: LogRepositoryInterface) {
-        this.tastamatAPiRepository = tastamatAPiRepository;
-        this.loggerService = loggerSerice;
-        console.log("service");
-    }
+    constructor(
+        private tastamatAPiRepository: TastamatAPiRepositoryInterface,
+        private loggerSerice: LogRepositoryInterface
+    ) { }
 
     public checkStatus(id: string): Promise<any> {
 
@@ -28,14 +24,6 @@ export default class TastamatService {
 
     public checkCellStatus(cellId: string): Promise<any> {
         return this.tastamatAPiRepository.checkCellStatus(cellId);
-    }
-
-    public checkPkgById(id: string): Promise<any> {
-        return this.tastamatAPiRepository.checkPkgById(id);
-    }
-
-    public statusTransfer(status: ITransferStatus): Promise<any> {
-        return this.tastamatAPiRepository.statusTransfer(status);
     }
 
 }

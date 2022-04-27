@@ -1,27 +1,25 @@
 import Validator from 'validatorjs';
 import ValidationException from 'sosise-core/build/Exceptions/Validation/ValidationException';
-import { ITransferStatus } from '../Types/IProduct';
-import { OrderStatus } from '../Enums/cellType';
+import { IBookCellRequest } from '../Types/IProduct';
+import { TypeOfCellChange } from '../Enums/cellType';
+
+const cellChangeTypeArray: string[] = Object.values(TypeOfCellChange)
+    .filter((value) => typeof value === "string")
+    .map((value) => (value as string));
 
 /**
  * If you need more validation rules, see: https://github.com/mikeerickson/validatorjs
  */
+export default class CellBookMethodUnifier {
 
-const orderStatusesArray: string[] = Object.values(OrderStatus)
-    .filter((value) => typeof value === "string")
-    .map((value) => (value as string));
+    private params: any;
+    public method: TypeOfCellChange;
 
-export default class StatusTransferUnifier {
-
-    private params: ITransferStatus;
-    public identifier: number;
-    public status: OrderStatus;
-    public date: number;
 
     /**
      * Constructor
      */
-    constructor(params: any) {
+    constructor(params: IBookCellRequest) {
         // Remember incoming params
         this.params = params;
 
@@ -38,9 +36,7 @@ export default class StatusTransferUnifier {
     private validate() {
         // Create validator
         const validator = new Validator(this.params, {
-            date: ['required', 'numeric', 'min:1'],
-            identifier: ['required', 'numeric', 'min:0'],
-            status: ['required', 'string', 'in:' + orderStatusesArray]
+            method: ['required', 'string', 'min:1', 'in:' + cellChangeTypeArray],
         });
 
         // If it fails throw exception
@@ -53,8 +49,6 @@ export default class StatusTransferUnifier {
      * Request data mapping
      */
     private map() {
-        this.identifier = + this.params.identifier;
-        this.status = this.params.status;
-        this.date = + this.params.date;
+        this.method = this.params.method;
     }
 }

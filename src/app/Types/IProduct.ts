@@ -1,4 +1,4 @@
-import { CellType, ReserveStatus, ResultStatus, TypeOfChange } from '../Enums/cellType';
+import { CellType, OrderStatus, ReserveStatus, TypeOfCellChange } from '../Enums/cellType';
 
 export interface IProduct {
     trackNumber: string;
@@ -12,7 +12,7 @@ export interface IProduct {
 export interface ITransferStatus {
     date: number;
     identifier: number;
-    status: ResultStatus;
+    status: OrderStatus;
 }
 
 export interface ITransferStatusResponse extends Omit<ITransferStatus, "date"> {
@@ -21,7 +21,7 @@ export interface ITransferStatusResponse extends Omit<ITransferStatus, "date"> {
 
 export interface IBookCellRequest extends Omit<ITransferStatus, "date" | "status"> {
     size: CellType;
-    method: TypeOfChange;
+    method: TypeOfCellChange;
 }
 
 export interface IBookCellResponse {
