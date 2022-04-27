@@ -4,7 +4,7 @@ import Validator from 'validatorjs';
 export default class OrderProductIdUnifier {
 
     private params: any;
-    public pkgIdentifier: string;
+    public pkgIdentifier: number;
 
     /**
      * Constructor
@@ -26,7 +26,7 @@ export default class OrderProductIdUnifier {
     private validate() {
         // Create validator
         const validator = new Validator(this.params, {
-            identifier: ['required', 'string', 'min:1']
+            identifier: ['required', 'numeric', 'min:0']
         });
 
         // If it fails throw exception

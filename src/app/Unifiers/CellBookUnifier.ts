@@ -9,7 +9,7 @@ import { CellType } from '../Enums/cellType';
 export default class CellBookUnifier {
 
     private params: IBookCellRequest;
-    public identifier: string;
+    public identifier: number;
     public size: CellType;
 
 
@@ -47,7 +47,7 @@ export default class CellBookUnifier {
      * Request data mapping
      */
     private map() {
-        this.identifier = this.params.identifier;
+        this.identifier = + this.params.identifier;
         this.size = this.params.size;
     }
 }

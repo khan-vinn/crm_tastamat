@@ -2,6 +2,7 @@ export default interface RetailerCRMRepositoryInterface {
     /**
      * Get all customers
      */
-    getInform(id: string): Promise<any>;
+    getInfoById(id: number): Promise<any>;
+    updateStatus(params: any): Promise<any>;
 
 }

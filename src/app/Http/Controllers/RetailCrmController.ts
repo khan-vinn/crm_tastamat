@@ -6,6 +6,7 @@ import { IBookCellRequest, IBookCellResponse, IProduct, ITransferStatus, ITransf
 import { ReserveStatus, ResultStatus, TypeOfChange } from '../../Enums/cellType';
 import StatusTransferUnifier from '../../Unifiers/StatusTransferUnifier';
 import CellBookUnifier from '../../Unifiers/CellBookUnifier';
+import RetailerCRMService from '../../Services/RetailerCRMService';
 
 export default class RetailCRMController {
 
@@ -60,21 +61,25 @@ export default class RetailCRMController {
     public async checkStatus(request: Request, response: Response, next: NextFunction) {
         try {
 
-            const identifier: string = request.params.identifier;
+            const identifier: number = +request.params.identifier;
             const orderProductIdUnifier: OrderProductIdUnifier = new OrderProductIdUnifier({ identifier });
 
-            // const service = IOC.make(TastamatService) as TastamatService;
+            const service: RetailerCRMService = IOC.make(RetailerCRMService);
 
-            const result: IProduct = {
-                address: "some",
-                fullName: "ANN",
-                lockIndex: "saasd4545879",
-                mobilePhone: "46465465",
-                parcerValue: 79879879798.6654,
-                trackNumber: identifier
-            };
+            const result: IProduct | { message: string } = await service.getInform(orderProductIdUnifier.pkgIdentifier);
 
-            response.json(result);
+            // const result: IProduct = {
+            //     address: "some",
+            //     fullName: "ANN",
+            //     lockIndex: "saasd4545879",
+            //     mobilePhone: "46465465",
+            //     parcerValue: 79879879798.6654,
+            //     trackNumber: identifier
+            // };
+
+            console.log(result);
+
+            response.json({ message: result });
 
         } catch (error) {
 
@@ -89,15 +94,19 @@ export default class RetailCRMController {
 
         try {
 
-            const status: ITransferStatus = request.body;
-            const statusTranferUnifier: StatusTransferUnifier = new StatusTransferUnifier(status);
+            const body: ITransferStatus = request.body;
+            const statusTranferUnifier: StatusTransferUnifier = new StatusTransferUnifier(body);
+            const service: RetailerCRMService = IOC.make(RetailerCRMService);
 
-            const result: ITransferStatusResponse = {
-                "result": (+new Date()).toString(),
-                "identifier": statusTranferUnifier.identifier,
-                "status": ResultStatus.SUCCESS
-            };
+            const result: ITransferStatusResponse | null = await service.updateStatus(statusTranferUnifier);
 
+            // const result: ITransferStatusResponse = {
+            //     "result": (+new Date()).toString(),
+            //     "identifier": +statusTranferUnifier.identifier,
+            //     "status": ResultStatus.SUCCESS
+            // };
+
+            console.log(result);
             response.json(result);
 
         } catch (error) {

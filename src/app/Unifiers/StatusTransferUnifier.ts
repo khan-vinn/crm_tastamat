@@ -8,8 +8,9 @@ import { ITransferStatus } from '../Types/IProduct';
 export default class StatusTransferUnifier {
 
     private params: ITransferStatus;
-    public identifier: string;
+    public identifier: number;
     public status: string;
+    public date: number;
 
     /**
      * Constructor
@@ -32,7 +33,7 @@ export default class StatusTransferUnifier {
         // Create validator
         const validator = new Validator(this.params, {
             date: ['required', 'numeric', 'min:1'],
-            identifier: ['required', 'string'],
+            identifier: ['required', 'numeric', 'min:0'],
             status: ['required', 'string']
         });
 
@@ -46,7 +47,8 @@ export default class StatusTransferUnifier {
      * Request data mapping
      */
     private map() {
-        this.identifier = this.params.identifier;
+        this.identifier = + this.params.identifier;
         this.status = this.params.status;
+        this.date = + this.params.date;
     }
 }

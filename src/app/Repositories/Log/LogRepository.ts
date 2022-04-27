@@ -1,19 +1,17 @@
-import Database from 'sosise-core/build/Database/Database';
 import LogRepositoryInterface from './LogRepositoryInterface';
-import { Knex } from 'knex';
 import LoggerService from 'sosise-core/build/Services/Logger/LoggerService';
+// import Database from 'sosise-core/build/Database/Database';
+// import { Knex } from 'knex';
 
 export default class LogRepository implements LogRepositoryInterface {
 
-    private dbClient: Knex;
+    // private dbClient: Knex;
 
     /**
      * Constructor
      */
     constructor(private loggerService: LoggerService) {
-        console.log("log")
-        console.log(this);
-        this.dbClient = Database.getConnection(process.env.DB_PROJECT_CONNECTION as string).client;
+        // this.dbClient = Database.getConnection(process.env.DB_PROJECT_CONNECTION as string).client;
     }
 
     /**
@@ -21,9 +19,9 @@ export default class LogRepository implements LogRepositoryInterface {
      */
     public async getAllCustomers(): Promise<any> {
         // Get rows
-        const customers = await this.dbClient
-            .table('customers');
+        // const customers = await this.dbClient
+        //     .table('customers');
 
-        return customers;
+        // return customers;
     }
 }

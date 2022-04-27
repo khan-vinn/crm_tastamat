@@ -3,10 +3,10 @@ import crypto from 'crypto';
 import { TastamatAPiRepositoryInterface } from './TastamatAPIRepositoryInterface';
 import Lodash from 'lodash';
 import Qs from 'qs';
-import tastamatConfig from '../../../config/tastamat';
 import Helper from 'sosise-core/build/Helper/Helper';
 import PostmanRequestExeption from '../../Exceptions/Postamat/PostamatRequestExeption';
 import { ITransferStatus } from '../../Types/IProduct';
+import { tastamatConfig } from '../../../config/APiConfig';
 
 export class TastamatAPIRepository implements TastamatAPiRepositoryInterface {
     static MAX_SEND_RETRIES = 3;

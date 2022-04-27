@@ -10,8 +10,8 @@ export interface IProduct {
 }
 
 export interface ITransferStatus {
-    date: string;
-    identifier: string;
+    date: number;
+    identifier: number;
     status: ResultStatus;
 }
 
