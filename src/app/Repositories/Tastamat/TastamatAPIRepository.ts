@@ -45,7 +45,13 @@ export class TastamatAPIRepository implements TastamatAPiRepositoryInterface {
 
     }
 
-    async cancelOrderCell(): Promise<any> {
+    async cancelOrderCell(identifier: string): Promise<any> {
+
+        const body = {
+            identificator: identifier
+        };
+
+        await this.makeRequest(TastamatAPIRepository.API_PREFIX + '/orders/unbook', "POST", null, body);
 
         return await 0;
     }

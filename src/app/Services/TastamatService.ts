@@ -14,8 +14,8 @@ export default class TastamatService {
 
     }
 
-    public cancelOrderCell(orderId): Promise<any> {
-        return this.tastamatAPiRepository.cancelOrderCell(orderId);
+    public cancelOrderCell(identifier: string): Promise<any> {
+        return this.tastamatAPiRepository.cancelOrderCell(identifier);
     }
 
     public bookCell({ cellId, status }: { cellId: string, status: string }): Promise<any> {
