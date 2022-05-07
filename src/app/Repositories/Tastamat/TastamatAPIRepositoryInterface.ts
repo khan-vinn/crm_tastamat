@@ -1,7 +1,8 @@
+import { CellType } from "../../Enums/cellType";
 import { ITransferStatus } from "../../Types/IProduct";
 
 export interface TastamatAPiRepositoryInterface {
-    cancelOrderCell(orderId: string): Promise<any>;
-    bookCell(cellId: string, status: string): Promise<any>;
+    unbookCell(orderId: string): Promise<any>;
+    bookCell(identifier: string, size: CellType): Promise<any>;
     checkCellStatus(cellId: string): Promise<any>;
 }

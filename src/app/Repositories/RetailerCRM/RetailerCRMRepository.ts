@@ -1,6 +1,5 @@
 import RetailerCRMRepositoryInterface from './RetailerCRMRepositoryInterface';
 import axios, { AxiosInstance } from 'axios';
-import PostmanRequestExeption from '../../Exceptions/Tastamat/TastamatRequestExeption';
 import Helper from 'sosise-core/build/Helper/Helper';
 import Lodash from 'lodash';
 import Qs from 'qs';

@@ -1,5 +1,7 @@
 export enum CellType {
-    "S", "M", "L"
+    "S" = "S",
+    "M" = "M",
+    "L" = "L"
 }
 export enum ResultStatus {
     "SUCCESS", "ERROR"

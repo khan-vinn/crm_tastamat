@@ -13,7 +13,7 @@ const cellChangeTypeArray: string[] = Object.values(CellType)
 export default class CellBookUnifier {
 
     private params: IBookCellRequest;
-    public identifier: number;
+    public identifier: string;
     public size: CellType;
 
 
@@ -51,7 +51,7 @@ export default class CellBookUnifier {
      * Request data mapping
      */
     private map() {
-        this.identifier = + this.params.identifier;
+        this.identifier = this.params.identifier;
         this.size = this.params.size;
     }
 }

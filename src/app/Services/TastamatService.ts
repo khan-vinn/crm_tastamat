@@ -1,3 +1,4 @@
+import { CellType } from "../Enums/cellType";
 import LogRepositoryInterface from "../Repositories/Log/LogRepositoryInterface";
 import { TastamatAPiRepositoryInterface } from "../Repositories/Tastamat/TastamatAPIRepositoryInterface";
 
@@ -8,22 +9,28 @@ export default class TastamatService {
         private loggerSerice: LogRepositoryInterface
     ) { }
 
-    public checkStatus(id: string): Promise<any> {
+    public async checkStatus(id: string): Promise<any> {
 
         return this.tastamatAPiRepository.checkCellStatus(id);
 
     }
 
-    public cancelOrderCell(identifier: string): Promise<any> {
-        return this.tastamatAPiRepository.cancelOrderCell(identifier);
+    public async unbookCell(identifier: string): Promise<any> {
+
+        return this.tastamatAPiRepository.unbookCell(identifier);
+
     }
 
-    public bookCell({ cellId, status }: { cellId: string, status: string }): Promise<any> {
-        return this.tastamatAPiRepository.bookCell(cellId, status);
+    public async bookCell({ identifier, size = CellType["L"] }: { identifier: string, size: CellType }): Promise<any> {
+
+        return this.tastamatAPiRepository.bookCell(identifier, size);
+
     }
 
     public checkCellStatus(cellId: string): Promise<any> {
+
         return this.tastamatAPiRepository.checkCellStatus(cellId);
+
     }
 
 }

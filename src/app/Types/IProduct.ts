@@ -11,7 +11,7 @@ export interface IProduct {
 
 export interface ITransferStatus {
     date: number;
-    identifier: number;
+    identifier: string;
     status: OrderStatus;
 }
 
