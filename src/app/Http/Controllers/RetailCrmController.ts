@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import OrderProductIdUnifier from '../../Unifiers/OrderProductIdUnifier';
 import IOC from 'sosise-core/build/ServiceProviders/IOC';
 import TastamatService from '../../Services/TastamatService';
-import { IBookCellRequest, IBookCellResponse, IProduct, ITransferStatus, ITransferStatusResponse, IUnbookCellResponse } from '../../Types/IProduct';
-import { ReserveStatus, TypeOfCellChange } from '../../Enums/cellType';
+import { IBookCellRequest, IProduct, ITransferStatus, ITransferStatusResponse } from '../../Types/IProduct';
+import { TypeOfCellChange } from '../../Enums/cellType';
 import StatusTransferUnifier from '../../Unifiers/StatusTransferUnifier';
 import CellBookUnifier from '../../Unifiers/CellBookUnifier';
 import RetailerCRMService from '../../Services/RetailerCRMService';
@@ -15,44 +15,48 @@ export default class RetailCRMController {
 
         try {
 
-            const method: CellBookMethodUnifier = new CellBookMethodUnifier(request.body);
+            const methodContainer: CellBookMethodUnifier = new CellBookMethodUnifier(request.body);
 
-            if (request?.body?.method?.toString() === TypeOfCellChange.book) {
+            if (methodContainer.method === TypeOfCellChange.book) {
+
+                // В RetailCRM создаем одно кастомное поле типа справочник со статусами Тастамата "Вложено", "Выдано", "Изъято". + Статусы "Запрос на бронирование ячейки", "Ячейка забронирована", "Запрос на отмену бронирования ячейки", "Бронирование ячейки отменено".
+                // body{ method:"book", identifier:"string", size:"L"|"M"|"S" }
 
                 const { body }: { body: IBookCellRequest } = request;
-                console.log(body);
+
                 const cellBookUnifier: CellBookUnifier = new CellBookUnifier(body);
 
                 const service = IOC.make(TastamatService) as TastamatService;
 
-                const result: IBookCellResponse = {
-                    active: false,
-                    dropcode: "acsacsd",
-                    pickcode: "dcscsdcsd",
-                    status: ReserveStatus.RESERVED
-                };
+                const result = await service.bookCell(cellBookUnifier);
+
+                // const result: IBookCellResponse = {
+                //     active: false,
+                //     dropcode: "acsacsd",
+                //     pickcode: "dcscsdcsd",
+                //     status: ReserveStatus.RESERVED
+                // };
 
                 response.json(result);
 
 
-            } else if (request?.body?.method?.toString() === TypeOfCellChange.unbook) {
+            } else if (methodContainer.method === TypeOfCellChange.unbook) {
+
+                // при изменении заказа на стороне RetailCRM на ОТМЕНЕН триггером отправляем запрос в сервис с перечнем параметров для отмены бронирования ячейки. Сервис идет в Tastsamat по API и отменяет бронь ячейки. После чего в RetailCRM отдает ответ - "Бронирование ячейки отменено".
+                // body:{method:"unbook", identifier: "string"}
 
                 const identifier: string = request.body?.identifier;
                 const orderProductIdUnifier: OrderProductIdUnifier = new OrderProductIdUnifier({ identifier });
 
-                // const service = IOC.make(TastamatService) as TastamatService;
+                const service = IOC.make(TastamatService) as TastamatService;
 
-                const result: IUnbookCellResponse = {
-                    active: true,
-                    status: ReserveStatus.UNRESERVED
-                };
+                const result = await service.unbookCell(identifier);
 
                 response.json(result);
 
             }
 
         } catch (error) {
-
             next(error);
 
         }
@@ -61,7 +65,10 @@ export default class RetailCRMController {
     public async checkStatus(request: Request, response: Response, next: NextFunction) {
         try {
 
-            const identifier: number = +request.params.identifier;
+            // Передача информации о посылке Вашей IT-системы в Систему Тастамат
+            // params: {identifer:"string"}
+
+            const identifier: number = +request.params?.identifier;
             const orderProductIdUnifier: OrderProductIdUnifier = new OrderProductIdUnifier({ identifier });
 
             const service: RetailerCRMService = IOC.make(RetailerCRMService);
@@ -82,6 +89,9 @@ export default class RetailCRMController {
     public async statusTranfer(request: Request, response: Response, next: NextFunction) {
 
         try {
+
+            // Передача статусов от Tastamat Opener в Вашу IT-систему
+            // body :{   identifier: "string", status: "string", date:logn  }
 
             const body: ITransferStatus = request.body;
             const statusTranferUnifier: StatusTransferUnifier = new StatusTransferUnifier(body);
