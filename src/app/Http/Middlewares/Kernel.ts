@@ -3,4 +3,5 @@
  */
 export const middlewares = [
     'ExampleMiddleware',
+    'LogInRequestResponseMiddleware'
 ];
