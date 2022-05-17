@@ -41,10 +41,8 @@ export class TastamatAPIRepository implements TastamatAPiRepositoryInterface {
             'x-hmac-key': tastamatConfig.KEY as string
         };
 
-        console.log(headers['x-hmac']);
-
         const result = this.makeRequest(TastamatAPIRepository.API_PREFIX + '/orders/book', "POST", null, body, headers);
-
+        
         return result;
 
 
@@ -55,9 +53,12 @@ export class TastamatAPIRepository implements TastamatAPiRepositoryInterface {
         const body = {
             "identificator": identifier
         };
-        const headers = { "x-hmac": this.generateHeader(body) };
+        const headers = {
+            'x-hmac': this.generateHeader(body) as string,
+            'x-hmac-key': tastamatConfig.KEY as string
+        };
 
-        await this.makeRequest(TastamatAPIRepository.API_PREFIX + '/orders/unbook', "POST", null, body, headers);
+        await this.makeRequest(TastamatAPIRepository.API_PREFIX + '/orders/unbook', "PUT", null, body, headers);
 
         return await 0;
     }
