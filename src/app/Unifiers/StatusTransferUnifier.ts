@@ -13,7 +13,7 @@ const orderStatusesArray: string[] = Object.values(OrderStatus)
 
 export default class StatusTransferUnifier {
 
-    private params: ITransferStatus;
+    private params;
     public identifier: number;
     public status: OrderStatus;
     public date: number;
@@ -39,7 +39,7 @@ export default class StatusTransferUnifier {
         // Create validator
         const validator = new Validator(this.params, {
             date: ['required', 'numeric', 'min:1'],
-            identifier: ['required', 'numeric', 'min:0'],
+            identificator: ['required', 'numeric', 'min:0'],
             status: ['required', 'string', 'in:' + orderStatusesArray]
         });
 
@@ -53,7 +53,7 @@ export default class StatusTransferUnifier {
      * Request data mapping
      */
     private map() {
-        this.identifier = + this.params.identifier;
+        this.identifier = + this.params.identificator;
         this.status = this.params.status;
         this.date = + this.params.date;
     }
