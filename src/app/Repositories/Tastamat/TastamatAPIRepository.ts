@@ -65,7 +65,6 @@ export class TastamatAPIRepository implements TastamatAPiRepositoryInterface {
     private generateHeader(message: any, token: string = tastamatConfig.TOKEN as string): string {
 
         // const hmac = crypto.createHmac('sha256', Buffer.from(token, 'utf-8')).update(JSON.stringify(message)).digest().toString('base64');
-        console.log(message);
         // return hmac;
         const hash = CryptoJS.HmacSHA256(JSON.stringify(message), token);
 

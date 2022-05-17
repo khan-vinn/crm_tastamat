@@ -37,9 +37,9 @@ export default class CrmApiV5Repository implements RetailerCRMRepositoryInterfac
         const result: IProduct = {
 
             address: `${response.customer.address?.text || response.customer.address?.id || 'no address'}`,
-            fullName: `${response.customer?.firstName || ''} ${response.customer?.lastName || ''}`,
+            fullname: `${response.customer?.firstName || ''} ${response.customer?.lastName || ''}`,
             mobilePhone: response.phone,
-            parcerValue: response.totalSum || response.totalSumm,
+            parcelValue: response.totalSum || response.totalSumm,
             lockerIndex: `s`,
             trackNumber: id.toString()
 
