@@ -40,7 +40,7 @@ export default class CrmApiV5Repository implements RetailerCRMRepositoryInterfac
             fullname: `${response.customer?.firstName || ''} ${response.customer?.lastName || ''}`,
             mobilePhone: response.phone,
             parcelValue: response.totalSum || response.totalSumm,
-            lockerIndex: `s`,
+            lockerIndex: `910000`, //locker index ?test - 91000 ? for production -> ?? 
             trackNumber: id.toString()
 
         };
