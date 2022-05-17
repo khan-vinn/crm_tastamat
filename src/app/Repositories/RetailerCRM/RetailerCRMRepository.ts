@@ -1,18 +1,19 @@
-import RetailerCRMRepositoryInterface from './RetailerCRMRepositoryInterface';
-import axios, { AxiosInstance } from 'axios';
-import Helper from 'sosise-core/build/Helper/Helper';
-import Lodash from 'lodash';
-import Qs from 'qs';
-import { crmConfig } from '../../../config/APiConfig';
-import CrmRequestException from '../../Exceptions/CRM/CrmRequestExeption';
-import { IProduct } from '../../Types/IProduct';
-import CrmOrderNotFoundException from '../../Exceptions/CRM/CrmOrderNotFoundExeption';
+import RetailerCRMRepositoryInterface from "./RetailerCRMRepositoryInterface";
+import axios, { AxiosInstance } from "axios";
+import Helper from "sosise-core/build/Helper/Helper";
+import Lodash from "lodash";
+import Qs from "qs";
+import { crmConfig } from "../../../config/APiConfig";
+import CrmRequestException from "../../Exceptions/CRM/CrmRequestExeption";
+import { IProduct } from "../../Types/IProduct";
+import CrmOrderNotFoundException from "../../Exceptions/CRM/CrmOrderNotFoundExeption";
 
-export default class CrmApiV5Repository implements RetailerCRMRepositoryInterface {
-
+export default class CrmApiV5Repository
+    implements RetailerCRMRepositoryInterface
+{
     static MAX_SEND_RETRIES = 3;
     static DELAY_BETWEEN_RETRIES_IN_MS = 5000;
-    static API_PREFIX = '/api/v5';
+    static API_PREFIX = "/api/v5";
     private apiKey: string;
     httpClient: AxiosInstance;
 
@@ -21,36 +22,35 @@ export default class CrmApiV5Repository implements RetailerCRMRepositoryInterfac
      */
 
     constructor() {
-
         this.apiKey = crmConfig.apiKey as string;
 
         this.httpClient = axios.create({
-            baseURL: crmConfig.baseURL
+            baseURL: crmConfig.baseURL,
         });
-
     }
 
     public async getInfoById(id: number): Promise<any> {
-
         const response = await this.fetchOrderIdInfo(id);
 
         const result: IProduct = {
-
-            address: `${response.customer.address?.text || response.customer.address?.id || 'no address'}`,
-            fullname: `${response.customer?.firstName || ''} ${response.customer?.lastName || ''}`,
+            address: `${
+                response.customer.address?.text ||
+                response.customer.address?.id ||
+                "no address"
+            }`,
+            fullname: `${response.customer?.firstName || ""} ${
+                response.customer?.lastName || ""
+            }`,
             mobilePhone: response.phone,
             parcelValue: response.totalSum || response.totalSumm,
-            lockerIndex: `910000`, //locker index ?test - 91000 ? for production -> ?? 
-            trackNumber: id.toString()
-
+            lockerIndex: `910000`, //locker index ?test - 91000 ? for production -> ??
+            trackNumber: id.toString(),
         };
 
         return result;
-
     }
 
     public async updateStatus(params: any): Promise<any> {
-
         const order = await this.fetchOrderIdInfo(params.identifier);
 
         const body = {
@@ -58,41 +58,60 @@ export default class CrmApiV5Repository implements RetailerCRMRepositoryInterfac
             site: order.site,
             order: JSON.stringify({
                 customFields: {
-                    tastamat_status: params.status
-                }
-            })
+                    tastamat_status: params.status,
+                },
+            }),
         };
 
-        const result = await this.makeRequest(`${CrmApiV5Repository.API_PREFIX}/orders/${order.externalId}/edit`, "POST", null, body);
+        const result = await this.makeRequest(
+            `${CrmApiV5Repository.API_PREFIX}/orders/${order.externalId}/edit`,
+            "POST",
+            null,
+            body
+        );
 
-        return result.data;
+        const responseData = {
+            identificator: params.identifier,
+            status: params.status,
+            result: "ERROR",
+        };
 
+        return responseData;
     }
 
     private async fetchOrderIdInfo(id: number) {
-
         const param = {
-
             apiKey: this.apiKey,
             filter: {
-                ids: [
-                    id
-                ]
+                ids: [id],
             },
-            limit: 20
-
+            limit: 20,
         };
 
-        const response = await this.makeRequest(CrmApiV5Repository.API_PREFIX + '/orders', "GET", param);
-
-        if (!(response.data.orders.length === 1)) throw new CrmOrderNotFoundException(
-            'Order was not found', id.toString(), null
+        const response = await this.makeRequest(
+            CrmApiV5Repository.API_PREFIX + "/orders",
+            "GET",
+            param
         );
+
+        if (!(response.data.orders.length === 1))
+            throw new CrmOrderNotFoundException(
+                "Order was not found",
+                id.toString(),
+                null
+            );
 
         return response.data.orders[0];
     }
 
-    private async makeRequest(url: string, method: "GET" | "DELETE" | "POST" | "PUT", params: any = null, body: any = null, headers: any = null, auth: any = null): Promise<any> {
+    private async makeRequest(
+        url: string,
+        method: "GET" | "DELETE" | "POST" | "PUT",
+        params: any = null,
+        body: any = null,
+        headers: any = null,
+        auth: any = null
+    ): Promise<any> {
         // Current amount of tries
         let tries = 0;
 
@@ -110,9 +129,9 @@ export default class CrmApiV5Repository implements RetailerCRMRepositoryInterfac
                     headers,
                     params,
                     paramsSerializer(par: any) {
-                        return Qs.stringify(par, { arrayFormat: 'brackets' });
+                        return Qs.stringify(par, { arrayFormat: "brackets" });
                     },
-                    data: body
+                    data: body,
                 });
 
                 // Send response, everything is fine
@@ -124,12 +143,14 @@ export default class CrmApiV5Repository implements RetailerCRMRepositoryInterfac
                         `Maximum amount of ${CrmApiV5Repository.MAX_SEND_RETRIES} tries is reached while requesting CRM`,
                         url,
                         params,
-                        Lodash.get(error, 'response.data', '')
+                        Lodash.get(error, "response.data", "")
                     );
                 }
 
                 // Wait some time
-                await Helper.sleep(CrmApiV5Repository.DELAY_BETWEEN_RETRIES_IN_MS);
+                await Helper.sleep(
+                    CrmApiV5Repository.DELAY_BETWEEN_RETRIES_IN_MS
+                );
             }
         }
     }

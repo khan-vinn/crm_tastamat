@@ -46,7 +46,6 @@ export default class RetailCRMController {
                 // };
 
                 response.json({ message: result.data });
-
             } else if (methodContainer.method === TypeOfCellChange.unbook) {
                 // при изменении заказа на стороне RetailCRM на ОТМЕНЕН триггером отправляем запрос в сервис с перечнем параметров для отмены бронирования ячейки. Сервис идет в Tastsamat по API и отменяет бронь ячейки. После чего в RetailCRM отдает ответ - "Бронирование ячейки отменено".
                 // body:{method:"unbook", identifier: "string"}
@@ -114,6 +113,7 @@ export default class RetailCRMController {
             // body :{   identifier: "string", status: "string", date:logn  }
 
             const body: ITransferStatus = request.body;
+            console.log(body);
             const statusTranferUnifier: StatusTransferUnifier =
                 new StatusTransferUnifier(body);
             const service: RetailerCRMService = IOC.make(RetailerCRMService);
@@ -121,7 +121,9 @@ export default class RetailCRMController {
             const result: ITransferStatusResponse | never =
                 await service.updateStatus(statusTranferUnifier);
 
-            response.json(result);
+            console.log(result);
+
+            response.json({ message: result });
         } catch (error) {
             next(error);
         }
