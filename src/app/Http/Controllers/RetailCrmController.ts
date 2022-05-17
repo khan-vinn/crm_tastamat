@@ -15,7 +15,6 @@ import RetailerCRMService from "../../Services/RetailerCRMService";
 import CellBookMethodUnifier from "../../Unifiers/CellBookMethodUnifier";
 
 export default class RetailCRMController {
-    
     public async updateStatus(
         request: Request,
         response: Response,
@@ -46,7 +45,8 @@ export default class RetailCRMController {
                 //     status: ReserveStatus.RESERVED
                 // };
 
-                response.json(result);
+                response.json({ message: result.data });
+
             } else if (methodContainer.method === TypeOfCellChange.unbook) {
                 // при изменении заказа на стороне RetailCRM на ОТМЕНЕН триггером отправляем запрос в сервис с перечнем параметров для отмены бронирования ячейки. Сервис идет в Tastsamat по API и отменяет бронь ячейки. После чего в RetailCRM отдает ответ - "Бронирование ячейки отменено".
                 // body:{method:"unbook", identifier: "string"}
@@ -59,7 +59,7 @@ export default class RetailCRMController {
 
                 const result = await service.unbookCell(identifier);
 
-                response.json(result);
+                response.json({ message: result });
             }
         } catch (error) {
             next(error);
@@ -77,6 +77,18 @@ export default class RetailCRMController {
 
             const identifier: string = request.params?.identifier;
 
+            if (identifier === "123testingtrack") {
+                const result: IProduct = {
+                    trackNumber: identifier,
+                    fullname: "Sam Ault",
+                    mobilePhone: "6464",
+                    address: "string 54",
+                    parcelValue: "656465465",
+                    lockerIndex: "456testlocker",
+                }; //for test
+                response.json(result);
+            }
+
             const orderProductIdUnifier: OrderProductIdUnifier =
                 new OrderProductIdUnifier({ identifier });
 
@@ -84,14 +96,6 @@ export default class RetailCRMController {
 
             const result: IProduct | { message: string } =
                 await service.getInform(orderProductIdUnifier.pkgIdentifier);
-            // const result = {
-            //     trackNumber: identifier,
-            //     fullname: "Sam Ault",
-            //     mobilePhone: "6464",
-            //     address: "string 54",
-            //     parcelValue: "656465465",
-            //     lockerIndex: "456testlocker",
-            // }; //for test
             response.json(result);
         } catch (error) {
             next(error);
