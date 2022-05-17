@@ -29,28 +29,34 @@ export default class CrmApiV5Repository
         });
     }
 
-    public async getInfoById(id: number): Promise<any> {
-        const response = await this.fetchOrderIdInfo(id);
+    public async getInfoById(id: string): Promise<any> {
+        const order = await this.fetchOrderIdInfo(id);
+
+        console.log(order);
 
         const result: IProduct = {
             address: `${
-                response.customer.address?.text ||
-                response.customer.address?.id ||
+                order.customer?.address?.text ||
+                order.customer?.address?.id ||
                 "no address"
             }`,
-            fullname: `${response.customer?.firstName || ""} ${
-                response.customer?.lastName || ""
+            fullname: `${order.customer?.firstName || ""} ${
+                order.customer?.lastName || ""
             }`,
-            mobilePhone: response.phone,
-            parcelValue: response.totalSum || response.totalSumm,
-            lockerIndex: `910000`, //locker index ?test - 91000 ? for production -> ??
+            mobilePhone: order?.phone,
+            parcelValue: order?.totalSum || order.totalSumm,
+            lockerIndex: order.delivery?.address?.index || `910000`,
+            //locker index ?test - 91000 ? for production -> ?? from order -------
             trackNumber: id.toString(),
         };
 
         return result;
     }
 
-    public async updateStatus(params: any): Promise<any> {
+    public async updateStatus(params: {
+        identifier: string;
+        status: string;
+    }): Promise<any> {
         const order = await this.fetchOrderIdInfo(params.identifier);
 
         const body = {
@@ -79,7 +85,7 @@ export default class CrmApiV5Repository
         return responseData;
     }
 
-    private async fetchOrderIdInfo(id: number) {
+    private async fetchOrderIdInfo(id: string) {
         const param = {
             apiKey: this.apiKey,
             filter: {
