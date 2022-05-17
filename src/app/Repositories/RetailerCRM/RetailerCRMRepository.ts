@@ -32,8 +32,6 @@ export default class CrmApiV5Repository
     public async getInfoById(id: string): Promise<any> {
         const order = await this.fetchOrderIdInfo(id);
 
-        console.log(order);
-
         const result: IProduct = {
             address: `${
                 order.customer?.address?.text ||
@@ -45,8 +43,7 @@ export default class CrmApiV5Repository
             }`,
             mobilePhone: order?.phone,
             parcelValue: order?.totalSum || order.totalSumm,
-            lockerIndex: order.delivery?.address?.index || `910000`,
-            //locker index ?test - 91000 ? for production -> ?? from order -------
+            lockerIndex: order.delivery?.address?.index ?? `910000`,
             trackNumber: id.toString(),
         };
 

@@ -113,15 +113,12 @@ export default class RetailCRMController {
             // body :{   identifier: "string", status: "string", date:logn  }
 
             const body: ITransferStatus = request.body;
-            console.log(body);
             const statusTranferUnifier: StatusTransferUnifier =
                 new StatusTransferUnifier(body);
             const service: RetailerCRMService = IOC.make(RetailerCRMService);
 
             const result: ITransferStatusResponse | never =
                 await service.updateStatus(statusTranferUnifier);
-
-            console.log(result);
 
             response.json({ message: result });
         } catch (error) {
