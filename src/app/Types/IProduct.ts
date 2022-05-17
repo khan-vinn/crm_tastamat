@@ -6,7 +6,7 @@ export interface IProduct {
     mobilePhone: string;
     address: string;
     parcerValue: number;
-    lockIndex: string;
+    lockerIndex: string;
 }
 
 export interface ITransferStatus {
