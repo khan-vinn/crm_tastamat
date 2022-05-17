@@ -13,10 +13,10 @@ export default class TastamatService {
     public async unbookCell(identifier: string): Promise<any> {
         return this.tastamatAPiRepository.unbookCell(identifier);
     }
-
+ 
     public async bookCell({
         identifier,
-        size = CellType["L"],
+        size = CellType["S"],
     }: {
         identifier: string;
         size: CellType;

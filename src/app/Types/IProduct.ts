@@ -10,7 +10,7 @@ export interface IProduct {
     fullname: string;
     mobilePhone: string;
     address: string;
-    parcelValue: number;
+    parcelValue: string;
     lockerIndex: string;
 }
 
