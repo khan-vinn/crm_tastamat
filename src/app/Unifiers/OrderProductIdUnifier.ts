@@ -1,10 +1,9 @@
-import ValidationException from 'sosise-core/build/Exceptions/Validation/ValidationException';
-import Validator from 'validatorjs';
+import ValidationException from "sosise-core/build/Exceptions/Validation/ValidationException";
+import Validator from "validatorjs";
 
 export default class OrderProductIdUnifier {
-
     private params: any;
-    public pkgIdentifier: number;
+    public pkgIdentifier: string;
 
     /**
      * Constructor
@@ -26,12 +25,15 @@ export default class OrderProductIdUnifier {
     private validate() {
         // Create validator
         const validator = new Validator(this.params, {
-            identifier: ['required', 'numeric', 'min:0']
+            identifier: ["required", "numeric", "min:0"],
         });
 
         // If it fails throw exception
         if (validator.fails()) {
-            throw new ValidationException('Validation exception', (validator.errors.all() as any));
+            throw new ValidationException(
+                "Validation exception",
+                validator.errors.all() as any
+            );
         }
     }
 

@@ -7,10 +7,12 @@ export enum ResultStatus {
     "SUCCESS",
     "ERROR",
 }
+
 export enum TypeOfCellChange {
     "book" = "book",
     "unbook" = "unbook",
 }
+
 export enum ReserveStatus {
     "RESERVED",
     "UNRESERVED",
