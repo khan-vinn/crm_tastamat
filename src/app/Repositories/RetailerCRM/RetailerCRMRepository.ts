@@ -52,18 +52,14 @@ export default class CrmApiV5Repository
 
     public async updateStatus(params: {
         identifier: string;
-        status: string;
+        status: any;
     }): Promise<any> {
         const order = await this.fetchOrderIdInfo(params.identifier);
 
         const body = {
             apiKey: this.apiKey,
             site: order.site,
-            order: JSON.stringify({
-                customFields: {
-                    tastamat_status: params.status,
-                },
-            }),
+            order: JSON.stringify({ customFields: params.status }),
         };
 
         const result = await this.makeRequest(
@@ -73,10 +69,12 @@ export default class CrmApiV5Repository
             body
         );
 
+        console.log(result.data.order.cus);
+
         const responseData = {
             identificator: params.identifier,
             status: params.status,
-            result: "ERROR",
+            result: "SUCCESS",
         };
 
         return responseData;

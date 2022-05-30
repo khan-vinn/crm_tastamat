@@ -45,6 +45,19 @@ export default class RetailCRMController {
                 //     status: ReserveStatus.RESERVED
                 // };
 
+                const crmService: RetailerCRMService =
+                    IOC.make(RetailerCRMService);
+
+                const middleResponse = await crmService.updateStatus({
+                    identifier: cellBookUnifier.identifier,
+                    customFields: {
+                        tastamat_drop_code: result.data.dropCode,
+                        tastamat_pick_code: result.data.pickCode,
+                    },
+                });
+
+                console.log(123, middleResponse);
+
                 response.json({ message: result.data });
             } else if (methodContainer.method === TypeOfCellChange.unbook) {
                 // при изменении заказа на стороне RetailCRM на ОТМЕНЕН триггером отправляем запрос в сервис с перечнем параметров для отмены бронирования ячейки. Сервис идет в Tastsamat по API и отменяет бронь ячейки. После чего в RetailCRM отдает ответ - "Бронирование ячейки отменено".
@@ -86,6 +99,7 @@ export default class RetailCRMController {
                     lockerIndex: "456testlocker",
                 }; //for test
                 response.json(result);
+                return;
             }
 
             const orderProductIdUnifier: OrderProductIdUnifier =
@@ -117,8 +131,15 @@ export default class RetailCRMController {
                 new StatusTransferUnifier(body);
             const service: RetailerCRMService = IOC.make(RetailerCRMService);
 
+            console.log(statusTranferUnifier);
+
             const result: ITransferStatusResponse | never =
-                await service.updateStatus(statusTranferUnifier);
+                await service.updateStatus({
+                    identifier: statusTranferUnifier.identifier,
+                    customFields: {
+                        tastamat_statuses: statusTranferUnifier.status,
+                    },
+                });
 
             response.json({ message: result });
         } catch (error) {
